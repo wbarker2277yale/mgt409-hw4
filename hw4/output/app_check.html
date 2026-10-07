@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>App Check — Campus Customs (Homework 4, Problem 11)</title>
+<meta name="description" content="Screenshots of the running Campus Customs site proving three checks: chat inventory lookup, dynamic search-result cards, and Problem 9 usability features.">
+<meta name="course" content="MGT 409 AI Foundations for Managers">
+<meta name="assignment" content="Homework 4: Campus Customs Shop + Chatbot">
+<meta name="problem" content="11">
+<style>
+  :root { --parchment:#f2e8d0; --paper:#faf5e8; --rule:#d9cba8; --ink:#231a14; --muted:#6e604f; --red:#9e1b32; --navy:#14284b; --gold:#b58b3a; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--parchment); color:var(--ink); font:17px/1.55 Baskerville, Georgia, serif; }
+  header.page-header { background:var(--navy); color:var(--parchment); padding:1.6rem 2rem 1.2rem; border-bottom:8px solid; border-image:repeating-linear-gradient(-45deg,var(--red) 0 10px,var(--paper) 10px 12px,var(--navy) 12px 22px,var(--gold) 22px 24px) 8; }
+  header.page-header h1 { margin:0; font-weight:400; font-size:2rem; }
+  header.page-header p { margin:.3rem 0 0; opacity:.85; }
+  main { max-width:1000px; margin:0 auto; padding:2rem; }
+  .kicker { font:600 .72rem/1 Futura, 'Century Gothic', sans-serif; letter-spacing:.2em; text-transform:uppercase; color:var(--red); margin:0 0 .4rem; }
+  section.summary, article.check { background:var(--paper); border:1px solid var(--rule); padding:1.4rem 1.6rem; margin-bottom:2rem; }
+  article.check { border-top:5px solid var(--navy); }
+  h2 { font-weight:400; color:var(--navy); margin:.1rem 0 .6rem; font-size:1.6rem; }
+  h3 { font-weight:400; color:var(--navy); margin:1.4rem 0 .4rem; font-size:1.15rem; }
+  table { border-collapse:collapse; width:100%; font-size:.95rem; }
+  th, td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--rule); vertical-align:top; }
+  th { font:600 .7rem Futura, sans-serif; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+  .pass { color:#1d6b3a; font-weight:bold; }
+  figure { margin:1rem 0 0; }
+  figure img { width:100%; border:1px solid var(--rule); box-shadow:0 8px 22px rgba(35,26,20,.12); background:#fff; }
+  figcaption { margin-top:.6rem; font-size:.95rem; }
+  figcaption strong { color:var(--red); }
+  .proves { background:#fffdf6; border-left:4px solid var(--red); padding:.6rem .9rem; margin:.8rem 0 0; }
+  .db { font-family:'Courier New', monospace; font-size:.85rem; background:#fffdf6; border:1px dashed var(--rule); padding:.6rem .8rem; white-space:pre-wrap; }
+  code { font-family:'Courier New', monospace; font-size:.9em; }
+  footer { text-align:center; color:var(--muted); font-size:.85rem; padding:1rem 2rem 3rem; }
+</style>
+</head>
+<body>
+
+<header class="page-header" role="banner">
+  <p class="kicker" style="color:var(--gold)">Homework 4 · Problem 11 · Site testing</p>
+  <h1>App Check — Campus Customs</h1>
+  <p>Screenshots of the live site (React front end + FastAPI/PydanticAI back end), taken on 2026-10-07 while logged in as a test shopper.</p>
+</header>
+
+<main role="main">
+
+<section class="summary" id="summary" aria-labelledby="summary-title" data-section="summary">
+  <p class="kicker">Summary for graders</p>
+  <h2 id="summary-title">Three required checks, all passed</h2>
+  <table>
+    <thead><tr><th>Check</th><th>What it shows</th><th>Screenshot(s)</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr data-check="1"><td><a href="#check-1">1. Inventory lookup</a></td><td>Chat checks one item's stock by size and price from the database</td><td><code>app_check_images/inventory.png</code></td><td class="pass">PASS</td></tr>
+      <tr data-check="2"><td><a href="#check-2">2. Dynamic search cards</a></td><td>"What hoodies do you have?" puts 27 product cards on the page; a card opens the single-item page</td><td><code>app_check_images/search_cards.png</code>, <code>search_cards_chat.png</code>, <code>search_card_detail.png</code></td><td class="pass">PASS</td></tr>
+      <tr data-check="3"><td><a href="#check-3">3. Problem 9 usability features</a></td><td>F1 catalogue filters (required feature), plus F2 quick questions and B2 safety guard</td><td><code>app_check_images/usability_filters.png</code>, <code>usability_quick_questions.png</code>, <code>usability_safety.png</code></td><td class="pass">PASS</td></tr>
+    </tbody>
+  </table>
+  <p style="margin:.8rem 0 0">How to reproduce: run the back end (<code>cd backend && uvicorn main:app --reload --port 8000</code>) and front end (<code>cd frontend && npm run dev</code>), open http://localhost:5173, and ask the same questions in the chat (the pennant at the bottom right, "Ask the Clerk").</p>
+</section>
+
+<!-- ============================================================ CHECK 1 -->
+<article class="check" id="check-1" aria-labelledby="check-1-title" data-check="1" data-feature="chat-inventory-lookup" data-problem-ref="6">
+  <p class="kicker">Check 1 of 3</p>
+  <h2 id="check-1-title">Chat checking the inventory level of an item</h2>
+  <p><strong>Steps:</strong> opened the <em>Crew Left Chest Hoodie</em> product page, clicked <em>Ask about this item</em>, and typed: “Is this in stock in a medium? How many of each size do you have?”</p>
+  <figure>
+    <img src="app_check_images/inventory.png" alt="Product page for the Crew Left Chest Hoodie with the chat panel open. The clerk replies that medium is sold out and lists stock by size: XS 20, S 12, M 0, L 8, XL 20, XXL 5, and offers the Basic Hoodie Big Yale as an in-stock alternative.">
+    <figcaption><strong>Screenshot 1 —</strong> The clerk answers from the <code>check_stock</code> tool: medium is sold out, and each size's count is listed. It understood “this” as the product on screen (Problem 8 page context).</figcaption>
+  </figure>
+  <p class="proves"><strong>What this proves:</strong> the agent reports honest stock straight from the database. It says “sold out” clearly instead of offering the size, and suggests an alternative that really has a medium.</p>
+  <h3>Database cross-check</h3>
+  <div class="db" data-evidence="sqlite">SELECT size, quantity FROM inventory WHERE product_id = 'crew-left-chest-hoodie';
+XS 20 | S 12 | M 0 | L 8 | XL 20 | XXL 5        → matches the chat reply exactly
+SELECT price FROM catalogue WHERE product_id = 'crew-left-chest-hoodie';   → 68.0 (the page shows $68.00)</div>
+</article>
+
+<!-- ============================================================ CHECK 2 -->
+<article class="check" id="check-2" aria-labelledby="check-2-title" data-check="2" data-feature="dynamic-search-cards" data-problem-ref="7">
+  <p class="kicker">Check 2 of 3</p>
+  <h2 id="check-2-title">Dynamic search-result cards after a category question</h2>
+  <p><strong>Steps:</strong> from the home page, asked the chat: “What hoodies do you have?”</p>
+  <figure>
+    <img src="app_check_images/search_cards_chat.png" alt="Products page with the chat open. The clerk says it found 27 hoodies and put them on the page; product cards for hoodies fill the page behind the chat.">
+    <figcaption><strong>Screenshot 2a —</strong> The agent searched the catalogue with <code>find_products</code> and returned the matching <code>product_ids</code>. The site jumped to the Products page and drew the cards.</figcaption>
+  </figure>
+  <figure>
+    <img src="app_check_images/search_cards.png" alt="Products page with chat closed: a banner reads 'A note from the clerk, you asked: What hoodies do you have? 27 matches' with a Show all products button, above hoodie cards with photos, prices on hang tags, names, and short descriptions.">
+    <figcaption><strong>Screenshot 2b —</strong> The banner shows the question and the count (27 matches). Each card has the photo, name, price, and short description. <em>Show all products</em> brings back the full catalogue.</figcaption>
+  </figure>
+  <figure>
+    <img src="app_check_images/search_card_detail.png" alt="Single-item page for Champion Reverse Weave Hoodie 1, opened by clicking a chat result card: large photo on the left, name, $68.00 price, description, color swatches, and stock by size on the right.">
+    <figcaption><strong>Screenshot 2c —</strong> Clicking a card the chat put on the page opens the same single-item page as Problem 3: a large photo on one side and full details on the other.</figcaption>
+  </figure>
+  <p class="proves"><strong>What this proves:</strong> the agent returns structured matches (<code>AgentAnswer.product_ids</code>), the back end rebuilds each card from the database (<code>ChatReply.products</code>), and the front end renders them as working cards. That is the Problem 7 API contract, end to end.</p>
+</article>
+
+<!-- ============================================================ CHECK 3 -->
+<article class="check" id="check-3" aria-labelledby="check-3-title" data-check="3" data-feature="usability-improvements" data-problem-ref="9">
+  <p class="kicker">Check 3 of 3</p>
+  <h2 id="check-3-title">Usability features added in Problem 9</h2>
+  <p>The required check is <strong>F1</strong>. F2 and B2 are shown as extra evidence (see <code>output/usability.md</code>).</p>
+
+  <h3 id="check-3-f1" data-feature="F1-catalogue-filters">F1 — Catalogue filter bar (required check)</h3>
+  <p><strong>Steps:</strong> on the Products page, chose <em>Crewnecks</em>, <em>In stock in my size: XL</em>, <em>Price: low to high</em>, and typed “bulldog”.</p>
+  <figure>
+    <img src="app_check_images/usability_filters.png" alt="The Catalogue page with the filter bar: Crewnecks tab selected, XL size chip highlighted, sort set to Price low to high, keyword bulldog, and the line 'Showing 4 of 102 items' with a Clear filters link, above four bulldog crewneck cards starting at $45.00.">
+    <figcaption><strong>Screenshot 3a —</strong> 102 products narrowed to the 4 bulldog crewnecks that are actually in stock in XL, cheapest first. The filters are saved in the address bar (<code>/products?cat=crewnecks&amp;size=XL&amp;sort=price-asc&amp;q=bulldog</code>), so the view can be shared or reloaded.</figcaption>
+  </figure>
+
+  <h3 id="check-3-f2" data-feature="F2-quick-questions">F2 — Context-aware quick questions (extra)</h3>
+  <figure>
+    <img src="app_check_images/usability_quick_questions.png" alt="Product page for District Vit Crewneck Vintage Bulldog with the chat open, showing three suggestion chips (Is this in stock in my size?, What colors does this come in?, Show me similar items). The tapped chip 'What colors does this come in?' got the reply: dark heather charcoal with a white YALE wordmark and vintage bulldog illustration.">
+    <figcaption><strong>Screenshot 3b —</strong> On a product page the chat offers product questions. One tap on “What colors does this come in?” returned the database colors (<code>["dark heather charcoal", "white"]</code>) without typing the product name.</figcaption>
+  </figure>
+
+  <h3 id="check-3-b2" data-feature="B2-safety-guard">B2 — Safety guard (extra)</h3>
+  <figure>
+    <img src="app_check_images/usability_safety.png" alt="Chat reply after the shopper typed a test card number: the clerk confirms large is in stock with 20 available, says not to share card details in chat, that the card number was removed and not stored, and that it cannot take payment.">
+    <figcaption><strong>Screenshot 3c —</strong> A test card number (4111 1111 1111 1111, the standard test number) was scrubbed before the model or database saw it. The clerk still answered the stock question and warned the shopper.</figcaption>
+  </figure>
+  <div class="db" data-evidence="sqlite">Saved history for this shopper (GET /api/chat/history):
+"Can I buy this in a large? My card is [card number removed]"
+SELECT COUNT(*) FROM chat_messages WHERE content LIKE '%4111%';   → 0</div>
+  <p class="proves"><strong>What this proves:</strong> the Problem 9 features exist and work in the running app, not just in the write-up.</p>
+</article>
+
+</main>
+
+<footer role="contentinfo">Campus Customs · MGT 409 Homework 4 · Problem 11 · Images in <code>output/app_check_images/</code></footer>
+
+<!-- Machine-readable summary of this page for automated graders. -->
+<script type="application/json" id="app-check-manifest">
+{
+  "assignment": "MGT 409 Homework 4 — Campus Customs Shop + Chatbot",
+  "problem": 11,
+  "page": "output/app_check.html",
+  "images_folder": "output/app_check_images/",
+  "tested_on": "2026-10-07",
+  "checks": [
+    {"id": 1, "name": "Chat checking the inventory level of an item", "result": "pass",
+     "images": ["app_check_images/inventory.png"],
+     "proves": "Stock by size and price come from the database; sold-out medium reported honestly."},
+    {"id": 2, "name": "Dynamic search-result cards after a category question", "result": "pass",
+     "images": ["app_check_images/search_cards_chat.png", "app_check_images/search_cards.png", "app_check_images/search_card_detail.png"],
+     "proves": "'What hoodies do you have?' rendered 27 cards from the database; a chat card opens the single-item page."},
+    {"id": 3, "name": "Problem 9 usability feature", "result": "pass",
+     "images": ["app_check_images/usability_filters.png", "app_check_images/usability_quick_questions.png", "app_check_images/usability_safety.png"],
+     "proves": "F1 catalogue filters (required), plus F2 quick questions and B2 safety guard, work in the running app."}
+  ]
+}
+</script>
+</body>
+</html>

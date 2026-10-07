@@ -1,0 +1,5 @@
+# Only the hw4/ folder is published; everything else in Homework 4/ stays local.
+/*
+!/.gitignore
+!/README.md
+!/hw4/
