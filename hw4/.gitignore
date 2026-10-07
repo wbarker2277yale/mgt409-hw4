@@ -16,9 +16,25 @@ campus_customs.db
 .venv/
 __pycache__/
 
-# Frontend
+# Frontend (merged from Vite's default frontend/.gitignore)
 frontend/node_modules/
 frontend/dist/
+frontend/dist-ssr/
+*.local
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
 # Local only
 .DS_Store
